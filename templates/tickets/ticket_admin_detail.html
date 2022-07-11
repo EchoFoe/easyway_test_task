@@ -1,0 +1,14 @@
+{% load static %}
+
+<br>
+<hr>
+ФИО пассажира: <strong>{{ ticket.passengers_name }}</strong> <br>
+Рейс: <strong>{{ ticket.voyage.itinerary }}</strong> <br>
+Номер билета: <strong>{{ ticket.ticket_number }}</strong> <br>
+Номер места: <strong>{{ ticket.place_number }}</strong> <br>
+Тип билета: <strong>{{ ticket.type_ticket }}</strong> <br>
+Станция отправления: <strong>{{ ticket.voyage.itinerary.departure_station }}</strong> <br>
+Время отправления: <strong>{{ ticket.voyage.departure_date }}</strong> <br>
+Станция прибытия: <strong>{{ ticket.voyage.itinerary.arrival_station }}</strong> <br>
+Время прибытия: <strong>{{ ticket.voyage.arrival_date }}</strong> <br>
+<hr>

@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="zxx">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <link rel="icon" type="image/x-icon" href="{% static 'imgs/favicon.ico' %}">
+        <title>{% block title %}Набор API методов{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    </head>
+
+    <body>
+        <p><a href="admin" target="_blank">Админка</a></p>
+        <p><a href="{% url 'travel:tickets' %}" target="_blank">Список билетов</a> /
+            <a href="{% url 'travel:ticket_create' %}" target="_blank">Создать билет</a></p>
+        <p><a href="{% url 'travel:api_busstations' %}" target="_blank">API по станциям</a></p>
+        <p><a href="{% url 'travel:api_carriers' %}" target="_blank">API по перевозчикам</a></p>
+        <p><a href="{% url 'travel:api_itineraries' %}" target="_blank">API по маршрутам</a></p>
+        <p><a href="{% url 'travel:api_voyages' %}" target="_blank">API по рейсам</a></p>
+        <p><a href="{% url 'travel:api_tickets' %}" target="_blank">API по билетам</a></p>
+        <p><a href="swagger" target="_blank">Swagger документация</a></p>
+    </body>
+
+</html>
