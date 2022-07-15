@@ -21,8 +21,6 @@
     "model": "travel.busstation",
     "pk": 1,
     "fields": {
-        "created": "2022-07-11",
-        "updated": "2022-07-11",
         "name": "Курская",
         "city": "Курск",
         "region": "Курская область"
@@ -32,8 +30,6 @@
     "model": "travel.busstation",
     "pk": 2,
     "fields": {
-        "created": "2022-07-11",
-        "updated": "2022-07-11",
         "name": "Московская",
         "city": "Москва",
         "region": "Московская область"
@@ -43,8 +39,6 @@
     "model": "travel.carrier",
     "pk": 1,
     "fields": {
-        "created": "2022-07-11",
-        "updated": "2022-07-11",
         "name": "Перевозчик ИИ",
         "inn_number": 123123123123
     }
@@ -53,8 +47,6 @@
     "model": "travel.itinerary",
     "pk": 1,
     "fields": {
-        "created": "2022-07-11",
-        "updated": "2022-07-11",
         "name": "Курск - Москва",
         "number": "1",
         "departure_station": 1,
@@ -65,8 +57,6 @@
     "model": "travel.itinerary",
     "pk": 2,
     "fields": {
-        "created": "2022-07-11",
-        "updated": "2022-07-11",
         "name": "Москва - Курск",
         "number": "2",
         "departure_station": 2,
@@ -77,8 +67,6 @@
     "model": "travel.voyage",
     "pk": 1,
     "fields": {
-        "created": "2022-07-11",
-        "updated": "2022-07-11",
         "departure_date": "2022-07-20T03:00:00Z",
         "arrival_date": "2022-07-20T09:00:00Z",
         "itinerary": 1,
@@ -89,8 +77,6 @@
     "model": "travel.voyage",
     "pk": 2,
     "fields": {
-        "created": "2022-07-11",
-        "updated": "2022-07-11",
         "departure_date": "2022-07-20T15:00:00Z",
         "arrival_date": "2022-07-19T21:00:00Z",
         "itinerary": 2,
@@ -101,8 +87,6 @@
     "model": "travel.ticket",
     "pk": 1,
     "fields": {
-        "created": "2022-07-11",
-        "updated": "2022-07-11",
         "passengers_name": "Иванов Иван Иванович",
         "voyage": 1,
         "ticket_number": "64",
@@ -114,8 +98,6 @@
     "model": "travel.ticket",
     "pk": 2,
     "fields": {
-        "created": "2022-07-11",
-        "updated": "2022-07-11",
         "passengers_name": "Иванова Ивана Ивановна",
         "voyage": 2,
         "ticket_number": "256",
@@ -127,13 +109,55 @@
     "model": "travel.ticket",
     "pk": 3,
     "fields": {
-        "created": "2022-07-11",
-        "updated": "2022-07-11",
         "passengers_name": "Юрьев Юрий Юрьевич",
         "voyage": 1,
         "ticket_number": "32",
         "place_number": 8,
         "type_ticket": "Взрослый билет"
+    }
+},
+    {
+    "model": "travel.printtemplate",
+    "pk": 1,
+    "fields": {
+        "name": "Сокращенный",
+        "passengers_name": true,
+        "voyage->departure_date": false,
+        "voyage->arrival_date": false,
+        "voyage->itinerary->name": false,
+        "voyage->itinerary->number": false,
+        "voyage->itinerary->departure_station->name": false,
+        "voyage->itinerary->departure_station->city": false,
+        "voyage->itinerary->departure_station->region": false,
+        "voyage->itinerary->arrival_station->name": false,
+        "voyage->itinerary->arrival_station->city": false,
+        "voyage->itinerary->arrival_station->region": false,
+        "voyage->bus_station_platform": false,
+        "ticket_number": true,
+        "place_number": true,
+        "type_ticket": true
+    }
+},
+{
+    "model": "travel.printtemplate",
+    "pk": 2,
+    "fields": {
+        "name": "Полный",
+        "passengers_name": true,
+        "voyage->departure_date": true,
+        "voyage->arrival_date": true,
+        "voyage->itinerary->name": true,
+        "voyage->itinerary->number": true,
+        "voyage->itinerary->departure_station->name": true,
+        "voyage->itinerary->departure_station->city": true,
+        "voyage->itinerary->departure_station->region": true,
+        "voyage->itinerary->arrival_station->name": true,
+        "voyage->itinerary->arrival_station->city": true,
+        "voyage->itinerary->arrival_station->region": true,
+        "voyage->bus_station_platform": true,
+        "ticket_number": true,
+        "place_number": true,
+        "type_ticket": true
     }
 }
 ]
