@@ -12,6 +12,8 @@
 
     <body>
         <p><a href="admin" target="_blank">Админка</a></p>
+        <p><a href="{% url 'travel:template_list' %}" target="_blank">Список шаблонов</a> /
+            <a href="{% url 'travel:template_create' %}" target="_blank">Создать шаблон</a></p></p>
         <p><a href="{% url 'travel:tickets' %}" target="_blank">Список билетов</a> /
             <a href="{% url 'travel:ticket_create' %}" target="_blank">Создать билет</a></p>
         <p><a href="{% url 'travel:api_busstations' %}" target="_blank">API по станциям</a></p>
@@ -19,6 +21,7 @@
         <p><a href="{% url 'travel:api_itineraries' %}" target="_blank">API по маршрутам</a></p>
         <p><a href="{% url 'travel:api_voyages' %}" target="_blank">API по рейсам</a></p>
         <p><a href="{% url 'travel:api_tickets' %}" target="_blank">API по билетам</a></p>
+        <p><a href="{% url 'travel:api_print_templates' %}" target="_blank">API по шаблонам</a></p>
         <p><a href="swagger" target="_blank">Swagger документация</a></p>
     </body>
 

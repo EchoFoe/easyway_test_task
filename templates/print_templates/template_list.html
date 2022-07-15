@@ -1,0 +1,10 @@
+{% load static %}
+<a href="{% url 'travel:home' %}">Домой</a> <br>
+<hr>
+{% for t in templates %}
+    {{ t.name }}
+    <hr>
+{% endfor %}
+
+List of _meta Ticket (verbose_name): {{ get_all_fields_of_ticket }} <br> <br>
+List of _meta Ticket (name): {{ get_all_fields_of_ticket_name }}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Ticket, Voyage
+from .models import Ticket, PrintTemplate
 
 
 class TicketCreateForm(forms.ModelForm):
@@ -12,4 +12,10 @@ class TicketCreateForm(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = ['passengers_name', 'voyage', 'ticket_number', 'place_number', 'type_ticket']
-        exclude = ['created', 'updated']
+
+
+class PrintTemplateForm(forms.ModelForm):
+
+    class Meta:
+        model = PrintTemplate
+        fields = '__all__'

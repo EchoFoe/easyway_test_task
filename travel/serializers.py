@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BusStation, Carrier, Itinerary, Voyage, Ticket
+from .models import BusStation, Carrier, Itinerary, Voyage, Ticket, PrintTemplate
 
 
 class BusStationsSerializer(serializers.ModelSerializer):
@@ -44,3 +44,16 @@ class TicketsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ('url', 'pk', 'passengers_name', 'voyage', 'ticket_number', 'place_number', 'type_ticket')
+
+
+class PrintTemplateSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='travel:print_template-detail')
+
+    class Meta:
+        model = PrintTemplate
+        fields = ('url', 'pk', 'passengers_name', 'ticket_number', 'place_number', 'type_ticket',
+                  'voyage->departure_date', 'voyage->arrival_date', 'voyage->bus_station_platform',
+                  'voyage->itinerary->name', 'voyage->itinerary->number', 'voyage->itinerary->departure_station->name',
+                  'voyage->itinerary->departure_station->city', 'voyage->itinerary->departure_station->region',
+                  'voyage->itinerary->arrival_station->name', 'voyage->itinerary->arrival_station->city',
+                  'voyage->itinerary->arrival_station->region')

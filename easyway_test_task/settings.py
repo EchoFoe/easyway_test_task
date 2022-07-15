@@ -59,10 +59,23 @@ TEMPLATE_LOADERS = (
 
 WSGI_APPLICATION = 'easyway_test_task.wsgi.application'
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
+# database from PK home
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'easyway',
+        'USER': 'postgres',
+        'PASSWORD': 'flocksfoe111',
+        'HOST': 'localhost',
+        'PORT': '5432'
+
     }
 }
 

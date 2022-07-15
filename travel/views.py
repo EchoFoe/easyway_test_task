@@ -1,18 +1,82 @@
 from django.shortcuts import render, get_object_or_404
+from django.db import models
 from django.contrib.admin.views.decorators import staff_member_required
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 
-from .models import BusStation, Carrier, Itinerary, Voyage, Ticket
-from .forms import TicketCreateForm
+from .models import BusStation, Carrier, Itinerary, Voyage, Ticket, PrintTemplate
+from .forms import TicketCreateForm, PrintTemplateForm
 from .serializers import BusStationsSerializer, CarriersSerializer, ItinerariesSerializer, VoyagesSerializer, \
-    TicketsSerializer
+    TicketsSerializer, PrintTemplateSerializer
 
 
 def home(request):
     return render(request, 'home/home.html')
+
+
+def template_list(request):
+    all_fields_of_tickets = [f.name for f in Ticket._meta.fields]
+    ticket_str = Ticket._meta.__str__()
+    templates = PrintTemplate.objects.all()
+    ticket_meta_fields = Ticket._meta.fields
+
+    def get_all_fields_of_ticket(prefix='', fields=ticket_meta_fields):
+
+        def create_prefix(prefix):
+            if prefix == '':
+                return ''
+            return prefix + '->'
+
+        ticket_fields_list = []
+        for f in fields:
+            if f.verbose_name == "ID":
+                pass
+            elif type(f) == models.fields.related.ForeignKey:
+                ticket_fields_list.extend(get_all_fields_of_ticket(f.verbose_name[-1],
+                                                                   f.remote_field.model._meta.fields))
+            else:
+                ticket_fields_list.append(f.verbose_name)
+        return ticket_fields_list
+    get_all_fields_of_ticket = get_all_fields_of_ticket()
+    get_count_of_the_ticket_fields = len(get_all_fields_of_ticket)
+
+    def get_all_fields_of_ticket_name(prefix='', fields=ticket_meta_fields):
+
+        def create_prefix(prefix):
+            if prefix == '':
+                return ''
+            return prefix + '_'
+
+        ticket_fields_list = []
+        for f in fields:
+            if f.name == "id":
+                pass
+            elif type(f) == models.fields.related.ForeignKey:
+                ticket_fields_list.extend(get_all_fields_of_ticket_name(create_prefix(prefix) + f.name,
+                                                                        f.remote_field.model._meta.fields))
+            else:
+                ticket_fields_list.append(create_prefix(prefix) + f.name)
+        return ticket_fields_list
+    get_all_fields_of_ticket_name = get_all_fields_of_ticket_name()
+
+    json = {
+        ticket_str: all_fields_of_tickets,
+    }
+    form = PrintTemplateForm(request.POST or None, initial={'data': json})
+    if form.is_valid():
+        pass
+
+    context = {
+        'form': form,
+        'templates': templates,
+        'get_all_fields_of_ticket': get_all_fields_of_ticket,
+        'get_count_of_the_ticket_fields': get_count_of_the_ticket_fields,
+        'get_all_fields_of_ticket_name': get_all_fields_of_ticket_name,
+    }
+
+    return render(request, 'print_templates/template_list.html', context)
 
 
 def tickets_list(request):
@@ -43,6 +107,26 @@ def ticket_create(request):
     }
 
     return render(request, 'tickets/ticket_create.html', context)
+
+
+@staff_member_required
+def template_create(request):
+    if request.method == 'POST':
+        form = PrintTemplateForm(request.POST)
+        if form.is_valid():
+            template = form.save(commit=False)
+            template.save()
+            return render(request, 'print_templates/template_created.html', {
+                'template': template,
+            })
+    else:
+        form = PrintTemplateForm()
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'print_templates/template_create.html', context)
 
 
 @staff_member_required
@@ -123,4 +207,12 @@ class TicketList(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     pagination_class = StandardResultsSetPagination
     search_fields = ['passengers_name', 'ticket_number']
+    lookup_field = 'pk'
+
+
+class PrintTemplateList(viewsets.ModelViewSet):
+    queryset = PrintTemplate.objects.all()
+    serializer_class = PrintTemplateSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
     lookup_field = 'pk'

@@ -11,7 +11,7 @@ class BaseContent(models.Model):
         abstract = True
 
 
-class BusStation(BaseContent):
+class BusStation(models.Model):
     name = models.CharField(max_length=64, verbose_name='Наименование автостанции')
     city = models.CharField(max_length=32, verbose_name='Город')
     region = models.CharField(max_length=32, verbose_name='Регион')
@@ -25,7 +25,7 @@ class BusStation(BaseContent):
         return '%s (%s/%s)' % (self.name, self.city, self.region)
 
 
-class Carrier(BaseContent):
+class Carrier(models.Model):
     name = models.CharField(max_length=64, verbose_name='Наименование перевозчика')
     inn_number = models.PositiveBigIntegerField(verbose_name='ИНН', unique=True,
                                                 help_text='Идентификационный номер налогоплательщика')
@@ -39,7 +39,7 @@ class Carrier(BaseContent):
         return '%s, ИНН: %s' % (self.name, self.inn_number)
 
 
-class Itinerary(BaseContent):
+class Itinerary(models.Model):
     name = models.CharField(max_length=64, verbose_name='Наименование маршрута')
     number = models.CharField(max_length=64, verbose_name='Номер маршрута')
     departure_station = models.ForeignKey(BusStation, related_name='departure_busstations', on_delete=models.CASCADE,
@@ -56,7 +56,7 @@ class Itinerary(BaseContent):
         return '%s (%s -> %s)' % (self.name, self.departure_station, self.arrival_station)
 
 
-class Voyage(BaseContent):
+class Voyage(models.Model):
     departure_date = models.DateTimeField(verbose_name='Дата отправления')
     arrival_date = models.DateTimeField(verbose_name='Дата прибытия')
     itinerary = models.ForeignKey(Itinerary, related_name='itineraries', on_delete=models.CASCADE,
@@ -72,7 +72,7 @@ class Voyage(BaseContent):
         return '%s' % self.itinerary
 
 
-class Ticket(BaseContent):
+class Ticket(models.Model):
     TYPE_TICKET = [
         ('Взрослый билет', 'Взрослый билет'),
         ('Детский билет', 'Детский билет'),
@@ -92,8 +92,52 @@ class Ticket(BaseContent):
     def get_absolute_url(self):
         return reverse('travel:ticket_detail', args=[self.ticket_number])
 
-    def get_schema(self):
+    def get_fields_from_model(self):
         return [f.name for f in Ticket._meta.local_fields]
 
     def __str__(self):
         return '№ билета: %s, ФИО пассажира: %s' % (self.ticket_number, self.passengers_name)
+
+
+ticket_meta_fields = Ticket._meta.fields
+
+
+def get_all_fields_of_ticket(prefix='', fields=ticket_meta_fields):
+
+    def create_prefix(prefix):
+        if prefix == '':
+            return ''
+        return prefix + '->'
+
+    ticket_fields_list = []
+    for f in fields:
+        if f.name == "id":
+            pass
+        elif type(f) == models.fields.related.ForeignKey:
+            ticket_fields_list.extend(get_all_fields_of_ticket(create_prefix(prefix) + f.name,
+                                                               f.remote_field.model._meta.fields))
+        else:
+            ticket_fields_list.append(create_prefix(prefix) + f.name)
+    return ticket_fields_list
+
+
+get_count_of_the_ticket_fields = len(get_all_fields_of_ticket())
+
+
+class PrintTemplate(models.Model):
+    name = models.CharField(max_length=128, verbose_name='Название шаблона для печати', blank=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Шаблон для печати'
+        verbose_name_plural = 'Шаблоны для печати'
+
+    def __str__(self):
+        return 'Шаблон для печати: %s' % self.name
+
+    def get_absolute_url(self):
+        return reverse('travel:template_detail', args=[self.id])
+
+
+for label in list(get_all_fields_of_ticket()):
+    PrintTemplate.add_to_class(label, models.BooleanField(blank=True, default=False))
